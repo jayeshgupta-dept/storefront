@@ -13,14 +13,14 @@ header .nav-wrapper {
   z-index: 3;
   position: fixed;
   border-bottom: 1px solid var(--color-neutral-300);
+   top: 48px;
 }
 
 header nav {
   box-sizing: border-box;
   display: grid;
   grid-template:
-  'hamburger brand tools wrapperPopUpButton' var(--nav-height)
-  'sections sections sections ...' 1fr / auto 1fr auto auto;
+    'hamburger brand tools wrapperPopUpButton' var(--nav-height) 'sections sections sections ...' 1fr / auto 1fr auto auto;
   align-items: center;
   gap: 0 16px;
   margin: auto;
@@ -32,11 +32,11 @@ header nav {
 
 header nav[aria-expanded='true'] {
   grid-template:
-    'hamburger brand' var(--nav-height)
-    'sections sections' 1fr
+    'hamburger brand' var(--nav-height) 'sections sections' 1fr
     'tools tools' var(--nav-height) / auto 1fr;
   overflow-y: auto;
   min-height: 100dvh;
+  display: flex;
 }
 
 @media (min-width: 900px) {
@@ -143,7 +143,7 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
 
 /* brand */
 header nav .nav-brand {
-  min-width: 128px;
+  /* min-width: 128px; */
 }
 
 header nav .nav-brand a {
@@ -169,7 +169,7 @@ header nav .nav-brand img {
 /* sections */
 header nav .nav-sections {
   grid-area: sections;
-  flex: 1 1 auto;
+  flex: 1;
   display: none;
   visibility: hidden;
 }
@@ -178,6 +178,7 @@ header nav[aria-expanded='true'] .nav-sections {
   display: block;
   visibility: visible;
   align-self: start;
+  flex: 1;
 }
 
 header nav .nav-sections ul {
@@ -187,8 +188,8 @@ header nav .nav-sections ul {
   padding-left: 0;
 }
 
-header nav .nav-sections ul > li,
-header nav .nav-sections ul > li > a {
+header nav .nav-sections ul>li,
+header nav .nav-sections ul>li>a {
   font: var(--type-body-2-strong-font);
   letter-spacing: var(--type-body-2-strong-letter-spacing);
 }
@@ -197,15 +198,15 @@ header nav .nav-brand a:hover {
   text-decoration: none;
 }
 
-header nav .nav-sections ul > li ul {
+header nav .nav-sections ul>li ul {
   margin-top: 0;
 }
 
-header nav .nav-sections ul > li ul > li {
+header nav .nav-sections ul>li ul>li {
   font-weight: 400;
 }
 
-header nav .nav-sections ul > li:empty {
+header nav .nav-sections ul>li:empty {
   display: none;
 }
 
@@ -224,13 +225,13 @@ header nav .nav-sections ul > li:empty {
     align-self: center;
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li,
+  header nav .nav-sections .default-content-wrapper>ul>li,
   header nav .nav-sections .nav-drop {
     border-radius: 4px;
     padding: 0 var(--spacing-small);
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li a {
+  header nav .nav-sections .default-content-wrapper>ul>li a {
     text-decoration: none;
   }
 
@@ -240,7 +241,7 @@ header nav .nav-sections ul > li:empty {
     margin: 0;
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li ul {
+  header nav .nav-sections .default-content-wrapper>ul>li ul {
     display: none;
     position: relative;
   }
@@ -251,11 +252,11 @@ header nav .nav-sections ul > li:empty {
     min-height: calc(var(--desktop-panel-min-height) - 2 * var(--spacing-xbig));
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li {
+  header nav .nav-sections .default-content-wrapper>ul>li {
     flex: 0 1 auto;
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] .submenu-wrapper {
+  header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true'] .submenu-wrapper {
     background-color: var(--color-neutral-50);
     box-sizing: border-box;
     left: 0;
@@ -267,24 +268,24 @@ header nav .nav-sections ul > li:empty {
     width: 100%;
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li .submenu-header {
+  header nav .nav-sections .default-content-wrapper>ul>li .submenu-header {
     display: none;
   }
 
-  header nav .nav-sections ul > li.nav-drop .submenu-title,
-  header nav .nav-sections ul > li.nav-drop .submenu-header * {
+  header nav .nav-sections ul>li.nav-drop .submenu-title,
+  header nav .nav-sections ul>li.nav-drop .submenu-header * {
     display: none;
     font: var(--type-body-1-emphasized-font);
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] ul {
+  header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true'] ul {
     display: flex;
     margin: 0 auto;
     overflow-x: auto;
     width: var(--desktop-large-panel-width);
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li ul::before {
+  header nav .nav-sections .default-content-wrapper>ul>li ul::before {
     content: '';
     position: absolute;
     top: -8px;
@@ -296,12 +297,12 @@ header nav .nav-sections ul > li:empty {
     border-bottom: 8px solid var(--color-neutral-500);
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li ul > li {
+  header nav .nav-sections .default-content-wrapper>ul>li ul>li {
     min-width: var(--desktop-item-panel-min-width);
     max-width: var(--desktop-item-panel-max-width);
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li:hover,
+  header nav .nav-sections .default-content-wrapper>ul>li:hover,
   header nav .nav-sections .nav-drop[aria-expanded='true'] {
     background-color: var(--color-neutral-200);
   }
@@ -332,9 +333,11 @@ header nav .nav-tools {
   align-items: center;
   background: var(--background-color);
   z-index: 3;
+  flex: 1;
+  justify-content: flex-end;
 }
 
-header nav .nav-tools-wrapper > button {
+header nav .nav-tools-wrapper>button {
   color: var(--color-brand-700);
   background: transparent;
   padding: 10px;
@@ -343,6 +346,12 @@ header nav .nav-tools-wrapper > button {
   height: 40px;
   width: 40px;
 }
+
+header nav .nav-tools-wrapper>button.garage-spacing {
+
+  width: fit-content;
+}
+
 
 header nav .nav-tools button.nav-cart-button {
   background-image: url('../../icons/cart.svg');
@@ -534,19 +543,15 @@ header .nav-search-input .search_autocomplete .popover-container {
   align-items: center;
 }
 
-.dropdown-wrapper.nav-tools-wrapper .nav-auth-menu-panel .authenticated-user-menu li > a {
+.dropdown-wrapper.nav-tools-wrapper .nav-auth-menu-panel .authenticated-user-menu li>a {
   padding: 12px 15px;
   display: inline-block;
   width: 100%;
   text-decoration: none;
 }
 
-.dropdown-wrapper.nav-tools-wrapper .nav-auth-menu-panel .authenticated-user-menu li > a:hover,
-.dropdown-wrapper.nav-tools-wrapper
-.nav-auth-menu-panel
-.authenticated-user-menu
-li
-> .logoutButton:hover {
+.dropdown-wrapper.nav-tools-wrapper .nav-auth-menu-panel .authenticated-user-menu li>a:hover,
+.dropdown-wrapper.nav-tools-wrapper .nav-auth-menu-panel .authenticated-user-menu li>.logoutButton:hover {
   background-color: lightgray;
 }
 
@@ -650,23 +655,23 @@ li
     letter-spacing: var(--type-headline-2-default-letter-spacing);
   }
 
-  header nav .nav-sections ul > li ul {
+  header nav .nav-sections ul>li ul {
     width: 100%;
   }
 
-  header nav .nav-sections ul > li ul > li {
+  header nav .nav-sections ul>li ul>li {
     font: var(--type-headline-2-default-font);
     letter-spacing: var(--type-headline-2-default-letter-spacing);
     padding: var(--spacing-xsmall);
     width: auto;
   }
 
-  header nav .nav-sections ul > li ul > li a {
+  header nav .nav-sections ul>li ul>li a {
     font: var(--type-headline-2-default-font);
     letter-spacing: var(--type-headline-2-default-letter-spacing);
   }
 
-  header nav .nav-sections ul > li ul > li:has(img) {
+  header nav .nav-sections ul>li ul>li:has(img) {
     margin: var(--spacing-small) 0;
     padding: 0;
   }
@@ -675,26 +680,26 @@ li
     display: none;
   }
 
-  header nav .nav-sections ul > li.nav-drop {
+  header nav .nav-sections ul>li.nav-drop {
     cursor: pointer;
   }
 
-  header nav .nav-sections ul > li.nav-drop::before {
+  header nav .nav-sections ul>li.nav-drop::before {
     content: '\276F';
     position: absolute;
     right: var(--spacing-xxsmall);
   }
 
-  header nav .nav-sections ul > li.nav-drop ul {
+  header nav .nav-sections ul>li.nav-drop ul {
     display: none;
     outline: none;
   }
 
-  header nav .nav-sections ul > li.nav-drop .submenu-wrapper {
+  header nav .nav-sections ul>li.nav-drop .submenu-wrapper {
     display: none;
   }
 
-  header nav .nav-sections ul > li.nav-drop.active .submenu-wrapper {
+  header nav .nav-sections ul>li.nav-drop.active .submenu-wrapper {
     background: var(--background-color);
     display: block;
     height: 100%;
@@ -705,12 +710,12 @@ li
     z-index: 3;
   }
 
-  header nav .nav-sections ul > li.nav-drop.active ul {
+  header nav .nav-sections ul>li.nav-drop.active ul {
     display: block;
     padding-bottom: var(--spacing-large);
   }
 
-  header nav .nav-sections ul > li.nav-drop .submenu-header {
+  header nav .nav-sections ul>li.nav-drop .submenu-header {
     background: var(--background-color);
     height: var(--spacing-large);
     left: 0;
@@ -720,7 +725,7 @@ li
     z-index: 3;
   }
 
-  header nav .nav-sections ul > li.nav-drop .submenu-header .back-link {
+  header nav .nav-sections ul>li.nav-drop .submenu-header .back-link {
     font: var(--type-body-1-strong-font);
     height: 2.2em;
     letter-spacing: var(--type-body-1-strong-letter-spacing);
@@ -728,19 +733,19 @@ li
     padding: 0 var(--spacing-medium);
   }
 
-  header nav .nav-sections ul > li.nav-drop .submenu-header hr {
+  header nav .nav-sections ul>li.nav-drop .submenu-header hr {
     margin: 0;
     position: absolute;
     top: var(--spacing-large);
     width: 320px;
   }
 
-  header nav .nav-sections ul > li .submenu-header .back-link::before {
+  header nav .nav-sections ul>li .submenu-header .back-link::before {
     content: '\276E';
     margin-right: var(--spacing-xsmall);
   }
 
-  header nav .nav-sections ul > li.nav-drop .submenu-title {
+  header nav .nav-sections ul>li.nav-drop .submenu-title {
     font: var(--type-body-1-default-font);
     letter-spacing: var(--type-body-1-default-letter-spacing);
     margin-bottom: var(--spacing-small);
@@ -769,4 +774,159 @@ li
   height: 15rem;
   max-width: 15rem;
   max-height: 15rem;
+}
+
+.nav-garage-button {
+  font-size: 16px;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+
+.garage-spacing {
+  width: fit-content;
+}
+
+
+nav .nav-sections .icon {
+  background-color: red;
+  width: 10px;
+  margin-left: 8px;
+  height: 0;
+}
+
+
+/* MS SSO Button Styles */
+.ms-sso-button {
+  width: 90%;
+  padding: 9px 0;
+  margin: 10px auto 30px auto;
+  background-color: #454544;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: var(--type-base-font-family);
+  display: block;
+}
+
+.ms-sso-button:hover:not(:disabled) {
+  background-color: #383838; /* Darker Microsoft blue */
+}
+
+.ms-sso-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.ms-sso-button:active:not(:disabled) {
+  background-color: #4f4c4c;
+  transform: scale(0.98);
+}
+
+/* Add spacing between sign-in form and MS SSO button */
+#auth-dropin-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Brand Bar Styles */
+.brand-bar {
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 4px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: none;
+  scrollbar-color: #ccc transparent;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 4;
+}
+
+.brand-bar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.brand-bar::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+.brand-bar-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 1264px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.brand-bar-item {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.brand-bar-item:hover {
+  color: #000 !important;
+  background-color: #e8e8e8 !important;
+}
+
+.brand-bar-item.active {
+  color: #000;
+  font-weight: 700;
+  cursor: default;
+}
+
+.brand-bar-item.disabled {
+  color: #999;
+  opacity: 0.6;
+}
+
+.brand-bar-item.disabled:hover {
+  color: #666;
+  background-color: #f0f0f0;
+}
+
+@media (max-width: 899px) {
+  .brand-bar-container {
+    padding: 0 24px;
+    gap: 24px;
+  }
+
+  .brand-bar-item {
+    font-size: 12px;
+  }
+}
+
+header .block {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 4;
+}
+
+
+main {
+  margin-top:48px; 
 }

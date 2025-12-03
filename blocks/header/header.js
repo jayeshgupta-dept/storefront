@@ -8,6 +8,7 @@ import { fetchPlaceholders, getProductLink, rootLink } from '../../scripts/comme
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
+import { createBrandBar, initializeBrandDisplay } from './brandBar.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -156,6 +157,17 @@ function setupSubmenu(navSection) {
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
  */
+
+function updateHeaderBrand() {
+  const getSelectedBrand = () => localStorage.getItem('selected_brand') || 'RWB';
+  const navBrand = document.querySelector('.nav-brand a');
+  if (navBrand) {
+    navBrand.textContent = getSelectedBrand();
+    navBrand.href = getSelectedBrand() == "RWB" ? '/' : `/${getSelectedBrand().toLowerCase()}`;
+    navBrand.title = getSelectedBrand();
+  }
+}
+
 export default async function decorate(block) {
   // load nav as fragment
   const navMeta = getMetadata('nav');
@@ -168,7 +180,7 @@ export default async function decorate(block) {
   nav.id = 'nav';
   while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
 
-  const classes = ['brand', 'sections', 'tools'];
+  const classes = ['sections', 'brand', 'tools'];
   classes.forEach((c, i) => {
     const section = nav.children[i];
     if (section) section.classList.add(`nav-${c}`);
@@ -186,7 +198,27 @@ export default async function decorate(block) {
     navSections
       .querySelectorAll(':scope .default-content-wrapper > ul > li')
       .forEach((navSection) => {
-        if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
+        if (navSection.querySelector('ul')) {
+          navSection.classList.add('nav-drop');
+          const label = navSection.querySelector('p');
+          if (label && !label.querySelector('.icon-chevron-down')) {
+            const iconSpan = document.createElement('span');
+            iconSpan.className = 'icon chevron-down';
+
+            iconSpan.innerHTML = `
+              <img
+                data-icon-name="chevron-down"
+                src="/icons/chevron-down.svg"
+                alt=""
+                loading="lazy"
+                width="16"
+                height="16"
+              />
+            `;
+            label.appendChild(iconSpan);
+          }
+
+        }
         setupSubmenu(navSection);
         navSection.addEventListener('click', (event) => {
           if (event.target.tagName === 'A') return;
@@ -210,27 +242,46 @@ export default async function decorate(block) {
 
   const navTools = nav.querySelector('.nav-tools');
 
-  /** Wishlist */
-  const wishlist = document.createRange().createContextualFragment(`
-     <div class="wishlist-wrapper nav-tools-wrapper">
-       <button type="button" class="nav-wishlist-button" aria-label="Wishlist"></button>
-       <div class="wishlist-panel nav-tools-panel"></div>
-     </div>
-   `);
 
-  navTools.append(wishlist);
 
-  const wishlistButton = navTools.querySelector('.nav-wishlist-button');
 
-  const wishlistMeta = getMetadata('wishlist');
-  const wishlistPath = wishlistMeta ? new URL(wishlistMeta, window.location).pathname : '/wishlist';
+  /** My Garage */
+  const myGarage = document.createRange().createContextualFragment(`
+  <div class="garage-wrapper nav-tools-wrapper">
+    <button type="button" class="nav-garage-button garage-spacing" aria-label="My Garage">My Garage</button>
+  </div>
+`);
 
-  wishlistButton.addEventListener('click', () => {
-    window.location.href = rootLink(wishlistPath);
+  navTools.append(myGarage);
+
+  const myGarageButton = navTools.querySelector('.nav-garage-button');
+
+  // Your garage URL
+  const garageMeta = getMetadata('garage');
+  const garagePath = garageMeta ? new URL(garageMeta, window.location).pathname : '/my-garage';
+
+  myGarageButton.addEventListener('click', () => {
+    window.location.href = rootLink(garagePath);
   });
+
+
+
 
   /** Mini Cart */
   const excludeMiniCartFromPaths = ['/checkout'];
+  const searchFragment = document.createRange().createContextualFragment(`
+  <div class="search-wrapper nav-tools-wrapper">
+    <button type="button" class="nav-search-button">Search</button>
+    <div class="nav-search-input nav-search-panel nav-tools-panel">
+      <form id="search-bar-form"></form>
+      <div class="search-bar-result" style="display: none;"></div>
+    </div>
+  </div>
+  `);
+
+
+
+  navTools.append(searchFragment);
 
   const minicart = document.createRange().createContextualFragment(`
      <div class="minicart-wrapper nav-tools-wrapper">
@@ -238,6 +289,9 @@ export default async function decorate(block) {
        <div class="minicart-panel nav-tools-panel"></div>
      </div>
    `);
+
+  renderAuthDropdown(navTools);
+
 
   navTools.append(minicart);
 
@@ -333,17 +387,6 @@ export default async function decorate(block) {
   }, { eager: true });
 
   /** Search */
-  const searchFragment = document.createRange().createContextualFragment(`
-  <div class="search-wrapper nav-tools-wrapper">
-    <button type="button" class="nav-search-button">Search</button>
-    <div class="nav-search-input nav-search-panel nav-tools-panel">
-      <form id="search-bar-form"></form>
-      <div class="search-bar-result" style="display: none;"></div>
-    </div>
-  </div>
-  `);
-
-  navTools.append(searchFragment);
 
   const searchPanel = navTools.querySelector('.nav-search-panel');
   const searchButton = navTools.querySelector('.nav-search-button');
@@ -491,8 +534,15 @@ export default async function decorate(block) {
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
-  block.append(navWrapper);
 
+  // -------------------------Brand Bar Start here-------------------------
+  const bar = await loadFragment('/brand-bar');
+  const brandBar = await createBrandBar(bar);
+  block.append(brandBar);
+  initializeBrandDisplay();
+  // -------------------------Brand Bar End here-------------------------  
+
+  block.append(navWrapper);
   navWrapper.addEventListener('mouseout', (e) => {
     if (isDesktop.matches && !nav.contains(e.relatedTarget)) {
       toggleAllNavSections(navSections);
@@ -527,5 +577,5 @@ export default async function decorate(block) {
     navSections,
     () => !isDesktop.matches && toggleMenu(nav, navSections, false),
   );
-  renderAuthDropdown(navTools);
+  // updateHeaderBrand();
 }
